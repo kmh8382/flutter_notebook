@@ -48,6 +48,36 @@ class ProductAPIService {
     }
   }
 
+  Future<Product> getProductById(int id) async {
+    final response = await http.get(Uri.parse("$baseUrl/$id"));
 
+    if(response.statusCode == 200) {
+      return Product.fromJson(json.decode(response.body));  // JSON 문자열 -> Map -> product
+    } else {
+      throw Exception("Failed to get product");
+    }
+  }
+
+  Future<Product> modifyProduct(Product product) async {
+    final response = await http.put(Uri.parse(
+      "$baseUrl/${product.id}"),
+      body: json.encode(product.toJson()),    // product -> Map -> JSON 문자열
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if(response.statusCode == 200) {
+      return Product.fromJson(json.decode(response.body));  // JSON 문자열 -> Map -> product
+    } else {
+      throw Exception("Failed to modify product");
+    }
+  }
+
+  Future<void> deleteProduct(int id) async {
+    final response = await http.delete(Uri.parse("$baseUrl/$id"));
+
+    if(response.statusCode != 200) {
+      throw Exception("Failed to delete product");
+    }
+  }
 
 }

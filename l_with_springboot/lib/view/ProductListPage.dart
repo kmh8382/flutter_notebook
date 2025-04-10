@@ -47,13 +47,17 @@ class ProductListPage extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-
+                          Navigator.pushNamed(
+                            context,
+                            "/modify",
+                            arguments: product,
+                          );
                         },
                         icon: const Icon(Icons.edit, color: Colors.blue,),
                       ),
                       IconButton(
                         onPressed: () {
-
+                          _showDialogDelete(context, product.id);
                         },
                         icon: const Icon(Icons.delete, color: Colors.red,),
                       ),
@@ -66,62 +70,38 @@ class ProductListPage extends StatelessWidget {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () { _showDialogRegist(context); },
+        onPressed: () {
+          Navigator.pushNamed(context, "/regist");
+        },
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _showDialogRegist(context) {
+
+  void _showDialogDelete(BuildContext context, int? id) {
     showDialog(
       context: context,
       builder: (context) {
-        String name = "";
-        int price = 0;
-        String description = "";
         return AlertDialog(
-          title: const Text("Product Registration"),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(hintText: "상품명"),
-                onChanged: (value) => name = value,
-              ),
-              TextField(
-                decoration: InputDecoration(hintText: "상품가격"),
-                onChanged: (value) => price = int.parse(value),
-              ),
-              TextField(
-                decoration: InputDecoration(hintText: "상품설명"),
-                onChanged: (value) => description = value,
-              ),
-            ],
-          ),
+          title: const Text("Product Delete"),
+          content: const Text("Do you want to delete this product?"),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();  // 뒤로가기 (AlertDialog 닫기)
-              },
+              onPressed: () => Navigator.of(context).pop(),   // 뒤로가기 (AlertDialog 닫기)
               child: const Text("취소"),
             ),
             TextButton(
-                onPressed: () {
-                  context.read<ProductProvider>().registProduct(
-                    Product(
-                      name: name,
-                      price: price,
-                      description: description
-                    )
-                  );
-                  Navigator.of(context).pop();  // 뒤로가기 (AlertDialog 닫기)
-                },
-                child: const Text("등록"),
-            ),
+              onPressed: () {
+                context.read<ProductProvider>().deleteProduct(id!);
+                Navigator.of(context).pop();                  // 뒤로가기 (AlertDialog 닫기)
+              },
+              child: const Text("삭제"),
+            )
           ],
         );
-      }
+      },
     );
   }
+
 }
